@@ -21,7 +21,7 @@
             android:text="Thanachot Singam"
             android:textColor="@color/red"
             android:textStyle="bold"
-            android:textSize="25dp" />
+            android:textSize="20dp" />
 
         <ImageView
             android:id="@+id/imageView"
