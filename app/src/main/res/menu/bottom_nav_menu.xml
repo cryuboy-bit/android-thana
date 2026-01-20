@@ -10,6 +10,10 @@
         android:icon="@drawable/profile"/>
     <item
         android:id="@+id/settings"
-        android:title="แมพ"
+        android:title="แผนที่"
         android:icon="@drawable/map"/>
+    <item
+        android:id="@+id/sensor"
+        android:title="เซนเซอร์"
+        android:icon="@drawable/sensor"/>
 </menu>
