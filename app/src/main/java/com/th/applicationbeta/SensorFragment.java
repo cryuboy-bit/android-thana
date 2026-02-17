@@ -17,8 +17,8 @@ import android.widget.TextView;
 public class SensorFragment extends Fragment {
 
     private SensorManager sensorManager;
-    private Sensor acceleromemter, gyroscope, proximity, pressure;
-    private TextView textView2,textView3,textView4,textView5;
+    private Sensor acceleromemter, gyroscope, proximity, pressure, light, temperature;
+    private TextView textView2,textView3,textView4,textView5,textView6,textView7;
 
     public SensorFragment() {
 
@@ -38,12 +38,16 @@ public class SensorFragment extends Fragment {
         textView3 = (TextView) view.findViewById(R.id.textView3);
         textView4 = (TextView) view.findViewById(R.id.textView4);
         textView5 = (TextView) view.findViewById(R.id.textView5);
+        textView6 = (TextView) view.findViewById(R.id.textView6);
+        textView7 = (TextView) view.findViewById(R.id.textView7);
 
         sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
         acceleromemter = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         proximity = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
         pressure = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
+        light = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        temperature = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
 
         SensorEventListener acceleromemterSensorListener = new SensorEventListener() {
             @Override
@@ -104,6 +108,42 @@ public class SensorFragment extends Fragment {
             public void onAccuracyChanged(Sensor sensor, int i) {
             }
         };
+        SensorEventListener lightSensorListener = new SensorEventListener() {
+            @Override
+            public void onSensorChanged(SensorEvent sensorEvent) {
+                Sensor mySensor = sensorEvent.sensor;
+
+                if (mySensor.getType() == Sensor.TYPE_LIGHT) {
+                    float lightValue = sensorEvent.values[0];
+                    String str = lightValue + " lx";
+                    textView6.setText(str);
+                }
+            }
+
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int i) {
+            }
+        };
+        SensorEventListener temperatureSensorListener = new SensorEventListener() {
+
+            @Override
+            public void onSensorChanged(SensorEvent event) {
+
+                if (event.sensor.getType() == Sensor.TYPE_AMBIENT_TEMPERATURE) {
+
+                    float temp = event.values[0]; // °C
+                    String str = temp + " °C";
+                    textView7.setText(str);
+                }
+            }
+
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int accuracy) {
+            }
+        };
+
+
+
 
         sensorManager.registerListener(pressureSensorListener, pressure,
                 SensorManager.SENSOR_DELAY_NORMAL);
@@ -113,6 +153,26 @@ public class SensorFragment extends Fragment {
                 SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(proximitySensorListener, proximity , 2 * 1000 * 1000);
 
+        // ===== Temperature Sensor =====
+        if (temperature != null) {
+
+            sensorManager.registerListener(
+                    temperatureSensorListener,
+                    temperature,
+                    SensorManager.SENSOR_DELAY_NORMAL
+            );
+
+        } else {
+            textView7.setText("No Temperature Sensor");
+        }
+
+        // ===== Light Sensor =====
+        if (light != null) {
+            sensorManager.registerListener(lightSensorListener, light,
+                    SensorManager.SENSOR_DELAY_NORMAL);
+        } else {
+            textView6.setText("No Light Sensor");
+        }
 
         return view;
     }
